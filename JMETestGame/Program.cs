@@ -1,12 +1,18 @@
-﻿namespace JMETestGame
+﻿using JME;
+
+namespace JMETestGame
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Hello, World!");
 
-            JME.Class1.PrintTest();
+            Game game = new();
+
+            game.Initialize();
+
+            game.Run();
         }
     }
 }
