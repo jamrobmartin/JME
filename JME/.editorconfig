@@ -26,12 +26,15 @@ csharp_prefer_braces = true:warning
 # Require 'this.' on member access? (DISABLED!)
 dotnet_diagnostic.SA1101.severity = none
 
+# Disable primary constructor suggestions
+dotnet_diagnostic.IDE0290.severity = none
+
 ##########################################
 # Naming Conventions
 ##########################################
 
 # Don't enforce private field naming (allow underscore)
-dotnet_diagnostic.SA1309.severity = none
+dotnet_diagnostic.SA1309.severity = warning
 
 ##########################################
 # Documentation Rules
@@ -58,6 +61,13 @@ dotnet_diagnostic.SA1202.severity = warning   # Elements should be ordered by ac
 
 # Allow using directives outside namespace (modern convention)
 dotnet_diagnostic.SA1200.severity = none
+
+##########################################
+# Suppress outdated StyleCop rules
+##########################################
+
+# Allow collection expressions with square brackets (C# 10+)
+dotnet_diagnostic.SA1010.severity = none
 
 ##########################################
 # Formatting Rules

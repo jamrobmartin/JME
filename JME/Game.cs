@@ -34,7 +34,7 @@ public class Game
     // ============================
     // Instance readonly fields
     // ============================
-    private readonly CoreContext coreContext = new();
+    private readonly CoreContext coreContext = new ();
 
     // ============================
     // Instance fields
@@ -113,6 +113,11 @@ public class Game
         private set { running = value; }
     }
 
+    /// <summary>
+    /// Gets the currently active scene.
+    /// </summary>
+    public Scene? ActiveScene => coreContext.SceneManager?.ActiveScene;
+
     // ============================
     // Indexers
     // ============================
@@ -181,6 +186,23 @@ public class Game
     }
 
     /// <summary>
+    /// Pushes a new scene onto the active scene stack.
+    /// </summary>
+    /// <param name="scene">The scene to push.</param>
+    public void PushScene(Scene scene) => coreContext.SceneManager?.PushScene(scene);
+
+    /// <summary>
+    /// Pops the top scene off the active scene stack.
+    /// </summary>
+    public void PopScene() => coreContext.SceneManager?.PopScene();
+
+    /// <summary>
+    /// Clears the current scene stack and sets a new active scene.
+    /// </summary>
+    /// <param name="scene">The scene to set as the only active scene.</param>
+    public void SetActiveScene(Scene scene) => coreContext.SceneManager?.SetActiveScene(scene);
+
+    /// <summary>
     /// Updates the game logic.
     /// </summary>
     /// <param name="deltaTime">The time elapsed since the last update, in seconds.</param>
@@ -188,7 +210,7 @@ public class Game
     {
         if (coreContext.Initialized)
         {
-            coreContext.Update();
+            coreContext.Update(deltaTime);
         }
     }
 

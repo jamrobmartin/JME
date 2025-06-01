@@ -1,16 +1,16 @@
-﻿// <copyright file="WindowManager.cs" company="NoeticDevStudio">
+﻿// <copyright file="UIManager.cs" company="NoeticDevStudio">
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
 
 using SFML.Graphics;
-using SFML.Window;
+using SFML.System;
 
 namespace JME.Core;
 
 /// <summary>
-/// Manages the SFML window, handling creation, settings, event dispatch, and rendering.
+/// Manages all screen-space UI elements and handles their updates and rendering.
 /// </summary>
-public class WindowManager
+public class UIManager
 {
     // ============================
     // Constants
@@ -33,7 +33,7 @@ public class WindowManager
     // ============================
     // Instance readonly fields
     // ============================
-    private readonly RenderWindow window;
+    private readonly List<Drawable> uiElements = [];
 
     // ============================
     // Instance fields
@@ -46,30 +46,12 @@ public class WindowManager
     // ============================
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WindowManager"/> class with default settings.
+    /// Initializes a new instance of the <see cref="UIManager"/> class.
     /// </summary>
-    public WindowManager()
-        : this(new WindowSettings())
+    /// <param name="view">The initial view.</param>
+    public UIManager(View? view = null)
     {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WindowManager"/> class using the specified window settings.
-    /// </summary>
-    /// <param name="settings">The window settings to apply.</param>
-    public WindowManager(WindowSettings settings)
-    {
-        Styles style = settings.Fullscreen ? Styles.Fullscreen : Styles.Default;
-
-        window = new RenderWindow(new VideoMode(settings.Width, settings.Height), settings.Title, style);
-        window.SetVerticalSyncEnabled(settings.VSync);
-        window.SetFramerateLimit(settings.FramerateLimit);
-
-        window.Closed += (sender, e) =>
-        {
-            CloseRequested?.Invoke();
-            window.Close();
-        };
+        View = view ?? new View();
     }
 
     // ============================
@@ -90,10 +72,7 @@ public class WindowManager
     // Events
     // ============================
 
-    /// <summary>
-    /// Occurs when the window close event is triggered.
-    /// </summary>
-    public event Action? CloseRequested;
+    // public event ExampleDelegate? ExampleEvent;
 
     // ============================
     // Enums
@@ -112,14 +91,9 @@ public class WindowManager
     // ============================
 
     /// <summary>
-    /// Gets the underlying SFML RenderWindow instance.
+    /// Gets or sets the view of the UIManager.
     /// </summary>
-    public RenderWindow Window => window;
-
-    /// <summary>
-    /// Gets a value indicating whether the window is currently open.
-    /// </summary>
-    public bool IsOpen => window != null && window.IsOpen;
+    public View View { get; set; } = new ();
 
     // ============================
     // Indexers
@@ -134,27 +108,49 @@ public class WindowManager
     // Public Methods
 
     /// <summary>
-    /// Dispatches window events such as input and window actions.
-    /// Should be called once per frame.
+    /// Adds a UI element to the manager.
     /// </summary>
-    public void Update() => window.DispatchEvents();
-
-    /// <summary>
-    /// Clears and displays the window frame.
-    /// Should be called once per frame after all rendering is complete.
-    /// </summary>
-    public void Render()
+    /// <param name="element">The drawable UI element to add.</param>
+    public void AddElement(Drawable element)
     {
-        window.Clear(Color.Black);
-
-        // Add render calls here (later we’ll call into the RenderManager)
-        window.Display();
+        if (!uiElements.Contains(element))
+        {
+            uiElements.Add(element);
+        }
     }
 
     /// <summary>
-    /// Closes the window manually.
+    /// Removes a UI element from the manager.
     /// </summary>
-    public void Close() => window.Close();
+    /// <param name="element">The drawable UI element to remove.</param>
+    public void RemoveElement(Drawable element) => _ = uiElements.Remove(element);
+
+    /// <summary>
+    /// Updates all UI elements (if needed).
+    /// </summary>
+    /// /// <param name="mousePosition">The current mouse position.</param>
+    public void Update(Vector2i mousePosition)
+    {
+        foreach (Drawable element in uiElements)
+        {
+            if (mousePosition.X > 0)
+            {
+                element.ToString();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Renders all UI elements using the provided RenderManager.
+    /// </summary>
+    /// <param name="renderManager">The render manager to use for drawing.</param>
+    public void Render(RenderManager renderManager)
+    {
+        foreach (Drawable element in uiElements)
+        {
+            renderManager.Draw(element);
+        }
+    }
 
     // Private Methods
 

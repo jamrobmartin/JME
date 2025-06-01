@@ -1,5 +1,6 @@
 ﻿using JME;
 using JME.Core;
+using JMETestGame.TestScenes;
 
 namespace JMETestGame
 {
@@ -18,6 +19,10 @@ namespace JMETestGame
             };
 
             game.Initialize(windowSettings);
+
+            BasicScene scene = new();
+
+            game.SetActiveScene(scene);
 
             game.Run();
         }

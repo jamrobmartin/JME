@@ -32,15 +32,15 @@ public class CoreContext
     // Instance readonly fields
     // ============================
 
-    // private readonly string _exampleInstanceReadonlyField;
-
     // ============================
     // Instance fields
     // ============================
     private bool initialized = false;
 
     // Private Managers
-    private WindowManager windowManager = new ();
+    private WindowManager? windowManager;
+    private RenderManager? renderManager;
+    private SceneManager? sceneManager;
 
     // ============================
     // Constructors
@@ -95,7 +95,12 @@ public class CoreContext
     /// <summary>
     /// Gets the window manager responsible for handling the SFML window.
     /// </summary>
-    public WindowManager WindowManager => this.windowManager;
+    public WindowManager? WindowManager => this.windowManager;
+
+    /// <summary>
+    /// Gets the scene manager responsible for managing scenes.
+    /// </summary>
+    public SceneManager? SceneManager => this.sceneManager;
 
     /// <summary>
     /// Gets a value indicating whether the core context has been initialized.
@@ -122,25 +127,47 @@ public class CoreContext
     /// <param name="customSettings">Optional custom window settings; if null, default settings are used.</param>
     public void Initialize(WindowSettings? customSettings = null)
     {
-        Console.WriteLine("CoreContext Initialized");
-
         WindowSettings windowSettings = customSettings ?? new WindowSettings();
 
         windowManager = new WindowManager(windowSettings);
         windowManager.CloseRequested += () => { CloseRequested?.Invoke(); };
 
+        renderManager = new RenderManager(windowManager.Window);
+
+        sceneManager = new SceneManager(renderManager.GetDefaultView());
+
         initialized = true;
+
+        Console.WriteLine("CoreContext Initialized");
     }
 
     /// <summary>
     /// Updates all active core systems.
     /// </summary>
-    public void Update() => windowManager?.Update();
+    /// /// <param name="deltaTime">The time elapsed since the last update call.</param>
+    public void Update(double deltaTime)
+    {
+        windowManager?.Update();
+        sceneManager?.Update(deltaTime);
+    }
 
     /// <summary>
     /// Renders all active core systems.
     /// </summary>
-    public void Render() => windowManager?.Render();
+    public void Render()
+    {
+        if (renderManager == null || windowManager == null)
+        {
+            return;
+        }
+
+        renderManager.Clear();
+
+        // Pass RenderManager so scenes can issue draw calls
+        sceneManager?.Render(renderManager);
+
+        renderManager.Display();
+    }
 
     // ============================
     // Nested Types (Structs, Classes, Interfaces)
