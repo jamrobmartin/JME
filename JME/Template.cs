@@ -1,14 +1,13 @@
-﻿// <copyright file="CoreContext.cs" company="NoeticDevStudio">
+﻿// <copyright file="Template.cs" company="NoeticDevStudio">
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
 
-namespace JME.Core;
+namespace JME;
 
 /// <summary>
-/// Represents the core context of the JME engine.
-/// Manages core systems, engine initialization, and coordinates update and render calls.
+/// Brief summary of what this class does.
 /// </summary>
-public class CoreContext
+public class Template
 {
     // ============================
     // Constants
@@ -37,19 +36,17 @@ public class CoreContext
     // ============================
     // Instance fields
     // ============================
-    private bool initialized = false;
 
-    // Private Managers
-    private WindowManager windowManager = new();
+    // private int _exampleInstanceField;
 
     // ============================
     // Constructors
     // ============================
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CoreContext"/> class.
+    /// Initializes a new instance of the <see cref="Template"/> class.
     /// </summary>
-    public CoreContext()
+    public Template()
     {
     }
 
@@ -71,10 +68,7 @@ public class CoreContext
     // Events
     // ============================
 
-    /// <summary>
-    /// Occurs when a close has been requested (e.g., window close button clicked).
-    /// </summary>
-    public event Action? CloseRequested;
+    // public event ExampleDelegate? ExampleEvent;
 
     // ============================
     // Enums
@@ -92,19 +86,7 @@ public class CoreContext
     // Properties
     // ============================
 
-    /// <summary>
-    /// Gets the window manager responsible for handling the SFML window.
-    /// </summary>
-    public WindowManager WindowManager => this.windowManager;
-
-    /// <summary>
-    /// Gets a value indicating whether the core context has been initialized.
-    /// </summary>
-    public bool Initialized
-    {
-        get { return this.initialized; }
-        private set { this.initialized = value; }
-    }
+    // public int ExampleProperty { get; set; }
 
     // ============================
     // Indexers
@@ -116,31 +98,9 @@ public class CoreContext
     // Methods
     // ============================
 
-    /// <summary>
-    /// Initializes the core systems of the engine, including the window manager.
-    /// </summary>
-    /// <param name="customSettings">Optional custom window settings; if null, default settings are used.</param>
-    public void Initialize(WindowSettings? customSettings = null)
-    {
-        Console.WriteLine("CoreContext Initialized");
+    // Public Methods
 
-        WindowSettings windowSettings = customSettings ?? new WindowSettings();
-
-        windowManager = new WindowManager(windowSettings);
-        windowManager.CloseRequested += () => { CloseRequested?.Invoke(); };
-
-        initialized = true;
-    }
-
-    /// <summary>
-    /// Updates all active core systems.
-    /// </summary>
-    public void Update() => windowManager?.Update();
-
-    /// <summary>
-    /// Renders all active core systems.
-    /// </summary>
-    public void Render() => windowManager?.Render();
+    // Private Methods
 
     // ============================
     // Nested Types (Structs, Classes, Interfaces)

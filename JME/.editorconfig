@@ -1,0 +1,88 @@
+# Top-level .editorconfig (apply to entire repo)
+root = true
+
+# Global C# rules
+[*.cs]
+
+##########################################
+# General Code Style
+##########################################
+
+# Use file-scoped namespaces (C# 10+)
+csharp_style_namespace_declarations = file_scoped:suggestion
+
+# Prefer var when type is apparent
+csharp_style_var_when_type_is_apparent = true:suggestion
+
+# Prefer explicit type when type is not apparent
+csharp_style_var_elsewhere = false:suggestion
+
+# Require expression-bodied members when possible
+csharp_style_expression_bodied_methods = true:suggestion
+
+# Require braces for all control blocks
+csharp_prefer_braces = true:warning
+
+# Require 'this.' on member access? (DISABLED!)
+dotnet_diagnostic.SA1101.severity = none
+
+##########################################
+# Naming Conventions
+##########################################
+
+# Don't enforce private field naming (allow underscore)
+dotnet_diagnostic.SA1309.severity = none
+
+##########################################
+# Documentation Rules
+##########################################
+
+# Enforce XML documentation for public, internal, and private elements
+dotnet_diagnostic.SA1600.severity = warning   # Elements must be documented
+dotnet_diagnostic.SA1611.severity = warning   # Parameters must be documented
+dotnet_diagnostic.SA1615.severity = warning   # Return values must be documented
+
+# You can adjust these to 'error' if you want stricter enforcement
+
+##########################################
+# Ordering Rules
+##########################################
+
+# Enforce element ordering
+dotnet_diagnostic.SA1201.severity = warning   # Elements should appear in correct order
+dotnet_diagnostic.SA1202.severity = warning   # Elements should be ordered by access
+
+##########################################
+# Using Directive Placement
+##########################################
+
+# Allow using directives outside namespace (modern convention)
+dotnet_diagnostic.SA1200.severity = none
+
+##########################################
+# Formatting Rules
+##########################################
+
+# Indentation: 4 spaces
+indent_style = space
+indent_size = 4
+
+# Max line length (optional)
+max_line_length = 120
+
+# New line at end of file
+insert_final_newline = true
+
+##########################################
+# File Headers (optional)
+##########################################
+
+# You can add StyleCop file header rules here if desired, e.g., company banners
+
+##########################################
+# Exclude Non-C# Files
+##########################################
+
+[*.{json,md,yml,yaml}]
+indent_style = space
+indent_size = 2

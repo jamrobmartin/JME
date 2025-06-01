@@ -1,14 +1,16 @@
-﻿// <copyright file="CoreContext.cs" company="NoeticDevStudio">
+﻿// <copyright file="WindowManager.cs" company="NoeticDevStudio">
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
+
+using SFML.Graphics;
+using SFML.Window;
 
 namespace JME.Core;
 
 /// <summary>
-/// Represents the core context of the JME engine.
-/// Manages core systems, engine initialization, and coordinates update and render calls.
+/// Manages the SFML window, handling creation, settings, event dispatch, and rendering.
 /// </summary>
-public class CoreContext
+public class WindowManager
 {
     // ============================
     // Constants
@@ -31,26 +33,43 @@ public class CoreContext
     // ============================
     // Instance readonly fields
     // ============================
-
-    // private readonly string _exampleInstanceReadonlyField;
+    private readonly RenderWindow _window;
 
     // ============================
     // Instance fields
     // ============================
-    private bool initialized = false;
 
-    // Private Managers
-    private WindowManager windowManager = new();
+    // private int _exampleInstanceField;
 
     // ============================
     // Constructors
     // ============================
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CoreContext"/> class.
+    /// Initializes a new instance of the <see cref="WindowManager"/> class with default settings.
     /// </summary>
-    public CoreContext()
+    public WindowManager()
+        : this(new WindowSettings())
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WindowManager"/> class using the specified window settings.
+    /// </summary>
+    /// <param name="settings">The window settings to apply.</param>
+    public WindowManager(WindowSettings settings)
+    {
+        Styles style = settings.Fullscreen ? Styles.Fullscreen : Styles.Default;
+
+        _window = new RenderWindow(new VideoMode(settings.Width, settings.Height), settings.Title, style);
+        _window.SetVerticalSyncEnabled(settings.VSync);
+        _window.SetFramerateLimit(settings.FramerateLimit);
+
+        _window.Closed += (sender, e) =>
+        {
+            CloseRequested?.Invoke();
+            _window.Close();
+        };
     }
 
     // ============================
@@ -72,7 +91,7 @@ public class CoreContext
     // ============================
 
     /// <summary>
-    /// Occurs when a close has been requested (e.g., window close button clicked).
+    /// Occurs when the window close event is triggered.
     /// </summary>
     public event Action? CloseRequested;
 
@@ -93,18 +112,14 @@ public class CoreContext
     // ============================
 
     /// <summary>
-    /// Gets the window manager responsible for handling the SFML window.
+    /// Gets the underlying SFML RenderWindow instance.
     /// </summary>
-    public WindowManager WindowManager => this.windowManager;
+    public RenderWindow Window => _window;
 
     /// <summary>
-    /// Gets a value indicating whether the core context has been initialized.
+    /// Gets a value indicating whether the window is currently open.
     /// </summary>
-    public bool Initialized
-    {
-        get { return this.initialized; }
-        private set { this.initialized = value; }
-    }
+    public bool IsOpen => _window != null && _window.IsOpen;
 
     // ============================
     // Indexers
@@ -116,31 +131,32 @@ public class CoreContext
     // Methods
     // ============================
 
+    // Public Methods
+
     /// <summary>
-    /// Initializes the core systems of the engine, including the window manager.
+    /// Dispatches window events such as input and window actions.
+    /// Should be called once per frame.
     /// </summary>
-    /// <param name="customSettings">Optional custom window settings; if null, default settings are used.</param>
-    public void Initialize(WindowSettings? customSettings = null)
+    public void Update() => _window.DispatchEvents();
+
+    /// <summary>
+    /// Clears and displays the window frame.
+    /// Should be called once per frame after all rendering is complete.
+    /// </summary>
+    public void Render()
     {
-        Console.WriteLine("CoreContext Initialized");
+        _window.Clear(Color.Black);
 
-        WindowSettings windowSettings = customSettings ?? new WindowSettings();
-
-        windowManager = new WindowManager(windowSettings);
-        windowManager.CloseRequested += () => { CloseRequested?.Invoke(); };
-
-        initialized = true;
+        // Add render calls here (later we’ll call into the RenderManager)
+        _window.Display();
     }
 
     /// <summary>
-    /// Updates all active core systems.
+    /// Closes the window manually.
     /// </summary>
-    public void Update() => windowManager?.Update();
+    public void Close() => _window.Close();
 
-    /// <summary>
-    /// Renders all active core systems.
-    /// </summary>
-    public void Render() => windowManager?.Render();
+    // Private Methods
 
     // ============================
     // Nested Types (Structs, Classes, Interfaces)

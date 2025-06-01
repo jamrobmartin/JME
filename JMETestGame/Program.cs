@@ -1,4 +1,5 @@
 ﻿using JME;
+using JME.Core;
 
 namespace JMETestGame
 {
@@ -10,7 +11,13 @@ namespace JMETestGame
 
             Game game = new();
 
-            game.Initialize();
+            WindowSettings windowSettings = new()
+            {
+                Width = 800,
+                Height = 600,
+            };
+
+            game.Initialize(windowSettings);
 
             game.Run();
         }
