@@ -40,7 +40,7 @@ public class CoreContext
     private bool initialized = false;
 
     // Private Managers
-    private WindowManager windowManager = new();
+    private WindowManager windowManager = new ();
 
     // ============================
     // Constructors
