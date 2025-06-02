@@ -20,9 +20,13 @@ namespace JMETestGame
 
             game.Initialize(windowSettings);
 
-            BasicScene scene = new();
+            // Basic Scene
+            BasicScene basicScene = new();
+            game.SetActiveScene(basicScene);
 
-            game.SetActiveScene(scene);
+            // ECS Test Scene
+            ECSTestScene ecsTestScene = new ();
+            game.SetActiveScene(ecsTestScene);
 
             game.Run();
         }

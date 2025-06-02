@@ -3,7 +3,6 @@
 // </copyright>
 
 using SFML.Graphics;
-using SFML.System;
 
 namespace JME.Core;
 
@@ -128,17 +127,8 @@ public class UIManager
     /// <summary>
     /// Updates all UI elements (if needed).
     /// </summary>
-    /// /// <param name="mousePosition">The current mouse position.</param>
-    public void Update(Vector2i mousePosition)
-    {
-        foreach (Drawable element in uiElements)
-        {
-            if (mousePosition.X > 0)
-            {
-                element.ToString();
-            }
-        }
-    }
+    /// <param name="updateContext">Context holding Update Data.</param>
+    public void Update(UpdateContext updateContext) => _ = View.Viewport.Contains(updateContext.MousePosition);
 
     /// <summary>
     /// Renders all UI elements using the provided RenderManager.

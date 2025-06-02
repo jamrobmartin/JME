@@ -2,6 +2,9 @@
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
 
+using SFML.System;
+using SFML.Window;
+
 namespace JME.Core;
 
 /// <summary>
@@ -148,7 +151,21 @@ public class CoreContext
     public void Update(double deltaTime)
     {
         windowManager?.Update();
-        sceneManager?.Update(deltaTime);
+
+        Vector2i mousePosition = Mouse.GetPosition();
+
+        if (windowManager != null)
+        {
+            mousePosition = Mouse.GetPosition(windowManager.Window);
+        }
+
+        var updateContext = new UpdateContext
+        {
+            DeltaTime = deltaTime,
+            MousePosition = mousePosition,
+        };
+
+        sceneManager?.Update(updateContext);
     }
 
     /// <summary>

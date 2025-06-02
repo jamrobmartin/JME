@@ -2,8 +2,8 @@
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
 
-using JME.Core;
 using System.Diagnostics;
+using JME.Core;
 
 namespace JME;
 

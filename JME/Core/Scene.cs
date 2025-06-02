@@ -3,8 +3,6 @@
 // </copyright>
 
 using SFML.Graphics;
-using SFML.System;
-using SFML.Window;
 
 namespace JME.Core;
 
@@ -132,13 +130,12 @@ public abstract class Scene
     /// <summary>
     /// Updates the scene.
     /// </summary>
-    /// <param name="deltaTime">The time elapsed since the last update.</param>
-    public virtual void Update(double deltaTime)
+    /// <param name="updateContext">Context holding Update Data.</param>
+    public virtual void Update(UpdateContext updateContext)
     {
-        Vector2i mousePosition = Mouse.GetPosition(); // Adjust if you want window-relative positions
-        UIManager.Update(mousePosition);
-        WorldEntityManager.Update();
-        OnUpdate(deltaTime);
+        UIManager.Update(updateContext);
+        WorldEntityManager.Update(updateContext);
+        OnUpdate(updateContext);
     }
 
     /// <summary>
@@ -165,8 +162,8 @@ public abstract class Scene
     /// <summary>
     /// Override to define scene-specific update logic.
     /// </summary>
-    /// <param name="deltaTime">The time elapsed since the last update.</param>
-    protected abstract void OnUpdate(double deltaTime);
+    /// <param name="updateContext">Context holding Update Data.</param>
+    protected abstract void OnUpdate(UpdateContext updateContext);
 
     /// <summary>
     /// Override to define scene-specific rendering logic.

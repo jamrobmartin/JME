@@ -156,8 +156,8 @@ public class SceneManager
     /// <summary>
     /// Updates the top scene on the stack.
     /// </summary>
-    /// <param name="deltaTime">The amount of time that has passed since the last Update call.</param>
-    public void Update(double deltaTime) => ActiveScene?.Update(deltaTime);
+    /// <param name="updateContext">Context holding Update Data.</param>
+    public void Update(UpdateContext updateContext) => ActiveScene?.Update(updateContext);
 
     /// <summary>
     /// Renders all scenes on the stack in order (bottom to top).

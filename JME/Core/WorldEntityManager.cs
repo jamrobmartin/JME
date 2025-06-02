@@ -2,6 +2,7 @@
 // Copyright (c) NoeticDevStudio. All rights reserved.
 // </copyright>
 
+using JME.Core.ECS;
 using SFML.Graphics;
 
 namespace JME.Core;
@@ -32,7 +33,7 @@ public class WorldEntityManager
     // ============================
     // Instance readonly fields
     // ============================
-    private readonly List<Drawable> entities = [];
+    private readonly List<IEntity> entities = [];
 
     // ============================
     // Instance fields
@@ -101,16 +102,14 @@ public class WorldEntityManager
     // public string this[int index] => "Example";
 
     // ============================
-    // Methods
+    // Public Methods
     // ============================
 
-    // Public Methods
-
     /// <summary>
-    /// Adds a world-space entity to the manager.
+    /// Adds an entity to the manager.
     /// </summary>
-    /// <param name="entity">The drawable entity to add.</param>
-    public void AddEntity(Drawable entity)
+    /// <param name="entity">The entity to add.</param>
+    public void AddEntity(IEntity entity)
     {
         if (!entities.Contains(entity))
         {
@@ -119,35 +118,67 @@ public class WorldEntityManager
     }
 
     /// <summary>
-    /// Removes a world-space entity from the manager.
+    /// Removes an entity from the manager.
     /// </summary>
-    /// <param name="entity">The drawable entity to remove.</param>
-    public void RemoveEntity(Drawable entity) => _ = entities.Remove(entity);
+    /// <param name="entity">The entity to remove.</param>
+    public void RemoveEntity(IEntity entity) => _ = entities.Remove(entity);
 
     /// <summary>
-    /// Updates all world-space entities.
+    /// Updates all entities and their components.
     /// </summary>
-    public void Update()
+    /// <param name="updateContext">Context holding Update Data.</param>
+    public void Update(UpdateContext updateContext)
     {
-        foreach (Drawable entity in entities)
+        foreach (IEntity entity in entities)
         {
-            entity.ToString();
+            foreach (IUpdatableComponent component in GetUpdatableComponents(entity))
+            {
+                component.Update(updateContext);
+            }
         }
     }
 
     /// <summary>
-    /// Renders all world-space entities using the provided RenderManager.
+    /// Renders all entities that have a renderable component.
     /// </summary>
     /// <param name="renderManager">The render manager to use for drawing.</param>
     public void Render(RenderManager renderManager)
     {
-        foreach (Drawable entity in entities)
+        foreach (IEntity entity in entities)
         {
-            renderManager.Draw(entity);
+            RenderableComponent? renderable = entity.GetComponent<RenderableComponent>();
+            if (renderable != null)
+            {
+                // Set the drawable’s position to match the entity’s position
+                if (renderable.Drawable is Transformable transformable)
+                {
+                    transformable.Position = entity.Position;
+                }
+
+                renderManager.Draw(renderable.Drawable);
+            }
         }
     }
 
-    // Private Methods
+    // ============================
+    // Private Helpers
+    // ============================
+
+    /// <summary>
+    /// Retrieves all updatable components from the entity.
+    /// </summary>
+    /// <returns>A list of all IUpdateableComponents.</returns>
+    /// <param name="entity">The entity to get Updateable Components from.</param>
+    private static IEnumerable<IUpdatableComponent> GetUpdatableComponents(IEntity entity)
+    {
+        foreach (IComponent component in entity.GetAllComponents())
+        {
+            if (component is IUpdatableComponent updatable)
+            {
+                yield return updatable;
+            }
+        }
+    }
 
     // ============================
     // Nested Types (Structs, Classes, Interfaces)

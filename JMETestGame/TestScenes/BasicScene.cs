@@ -30,7 +30,7 @@ namespace JMETestGame.TestScenes
             
         }
 
-        protected override void OnUpdate(double deltaTime)
+        protected override void OnUpdate(UpdateContext updateContext)
         {
             //
         }
